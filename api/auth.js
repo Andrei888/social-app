@@ -1,17 +1,22 @@
 import express from "express";
 import { check, validationResult } from "express-validator";
 import bcryptjs from "bcryptjs";
-import JsonWebTokenError from "jsonwebtoken";
+import JsonWebToken from "jsonwebtoken";
 import User from "../models/User.js";
 import "dotenv/config";
+import auth from "../middleware/auth.js";
 
 const router = express.Router();
 
-// @route post api/auth
+// @route get api/auth
 // @description Test rout
 // @access Public
 
-router.get("/", (req, res) => res.send("Test auth Social"));
+router.get("/", auth, (req, res) => res.send("Test auth Social"));
+
+// @route get post/auth
+// @description auth rout
+// @access Public
 
 router.post(
   "/",
@@ -38,7 +43,7 @@ router.post(
         }
 
         const isValidPassword = await bcryptjs.compare(password, user.password);
-        console.log("parola este valida?", isValidPassword);
+        //console.log("parola este valida?", isValidPassword);
 
         const payload = {
           user: {
@@ -46,13 +51,13 @@ router.post(
           },
         };
 
-        jsonwebtoken.sign(
+        JsonWebToken.sign(
           payload,
           process.env.jwtSecret,
           { expiresIn: 360000 },
           (err, token) => {
             if (err) throw err;
-            console.log(token);
+            //console.log(token);
             return res.json({ token: token });
           }
         );

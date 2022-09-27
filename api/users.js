@@ -29,7 +29,6 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      res.send("Successful registration");
       const { name, email, password } = req.body;
       try {
         let user = await users.findOne({ email: email });
